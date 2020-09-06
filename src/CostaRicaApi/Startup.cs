@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CostaRicaApi.Models;
+using CostaRicaApi.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +31,7 @@ namespace CostaRicaApi
             builder.Password = Configuration["DB_Password"];
 
             services.AddDbContext<ExpenseContext>(opt => opt.UseNpgsql(builder.ConnectionString));
+            services.AddScoped<IExpenseRepository, ExpenseRepository>();
             services.AddControllers();
         }
 
