@@ -5,6 +5,8 @@ namespace CostaRicaApi.Models {
 
         public DbSet<Expense> Expenses { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
         public ExpenseContext(DbContextOptions<ExpenseContext> options) : base(options) {
 
         }
