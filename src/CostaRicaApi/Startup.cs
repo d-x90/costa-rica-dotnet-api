@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using CostaRicaApi.Models;
 using CostaRicaApi.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -31,8 +32,12 @@ namespace CostaRicaApi
             builder.Password = Configuration["DB_Password"];
 
             services.AddDbContext<ExpenseContext>(opt => opt.UseNpgsql(builder.ConnectionString));
+            
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            
             services.AddControllers();
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
