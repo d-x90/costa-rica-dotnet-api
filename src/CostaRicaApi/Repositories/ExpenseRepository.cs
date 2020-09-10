@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CostaRicaApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CostaRicaApi.Repositories {
     public class ExpenseRepository : IExpenseRepository
@@ -8,14 +10,14 @@ namespace CostaRicaApi.Repositories {
 
         public ExpenseRepository(ExpenseContext context) => _context = context; 
 
-        public IEnumerable<Expense> GetAllExpenses()
+        public Task<List<Expense>> GetAllExpensesAsync()
         {
-            return _context.Expenses;
+            return _context.Expenses.ToListAsync();
         }
 
-        public Expense GetExpenseById(int id)
+        public Task<Expense> GetExpenseByIdAsync(int id)
         {
-            return _context.Expenses.Find(id);
+            return _context.Expenses.FindAsync(id).AsTask();
         }
     }
 }

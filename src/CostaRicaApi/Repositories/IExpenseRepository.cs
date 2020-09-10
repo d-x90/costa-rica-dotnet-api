@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CostaRicaApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CostaRicaApi.Repositories {
     public interface IExpenseRepository {
-        IEnumerable<Expense> GetAllExpenses();
+        Task<List<Expense>> GetAllExpensesAsync();
         
-        Expense GetExpenseById(int id);
+        Task<Expense> GetExpenseByIdAsync(int id);
     }
 }

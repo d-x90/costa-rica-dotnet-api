@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using CostaRicaApi.Models;
 using CostaRicaApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -8,27 +9,23 @@ namespace CostaRicaApi.Controllers {
 
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class ExpensesController: ControllerBase {
+    public class ExpensesController : ControllerBase {
 
         private readonly IExpenseRepository _expenseRepo;
-        private readonly ILogger<ExpensesController> _logger;
-        public ExpensesController(IExpenseRepository expenseRepo, ILogger<ExpensesController> logger) {
+        public ExpensesController(IExpenseRepository expenseRepo) {
             _expenseRepo = expenseRepo;
-            _logger = logger;
         }
         
         [HttpGet]
-        public ActionResult<IEnumerable<Expense>> Get() {
-            _logger.LogInformation("api/v1/expenses GET");
+        public async Task<ActionResult<List<Expense>>> GetExpenses() {
+            var expenses = await _expenseRepo.GetAllExpensesAsync();
 
-            return Ok(_expenseRepo.GetAllExpenses());
+            return expenses;
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Expense> Get(int id) {
-            _logger.LogInformation("api/v1/expenses/{id} GET");
-
-            var expense = _expenseRepo.GetExpenseById(id);
+        public async Task<ActionResult<Expense>> GetExpense(int id) {
+            var expense = await _expenseRepo.GetExpenseByIdAsync(id);
 
             if(expense == null) {
                 return NotFound();
