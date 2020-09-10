@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using CostaRicaApi.Models;
 using CostaRicaApi.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,7 +31,10 @@ namespace CostaRicaApi
             
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
             
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options => { 
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+            });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }

@@ -6,7 +6,8 @@ namespace CostaRicaApi.Profiles {
     public class ExpenseProfile : Profile {
         public ExpenseProfile()
         {
-            CreateMap<ExpenseCreateUptadeDto, Expense>();
+            CreateMap<ExpenseCreateUpdateDto, Expense>();
+            CreateMap<Expense, ExpenseCreateUpdateDto>();
         }
     }
 }

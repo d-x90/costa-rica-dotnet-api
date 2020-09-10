@@ -1,11 +1,7 @@
-using System;
-using System.Collections;
 using CostaRicaApi.Controllers;
 using CostaRicaApi.Models;
 using CostaRicaApi.Repositories;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace CostaRicaApi.Tests
@@ -24,7 +20,7 @@ namespace CostaRicaApi.Tests
             var expenseRepo = new ExpenseRepository(dbContext);
 
             //Controller
-            var controller = new ExpensesController(expenseRepo);
+            var controller = new ExpensesController(expenseRepo, null);
 
             //Act
             var result = await controller.GetExpenses();
