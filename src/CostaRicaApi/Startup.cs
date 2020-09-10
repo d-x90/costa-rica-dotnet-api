@@ -2,12 +2,15 @@ using System;
 using AutoMapper;
 using CostaRicaApi.Models;
 using CostaRicaApi.Repositories;
+using CostaRicaApi.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 
 namespace CostaRicaApi
@@ -30,6 +33,8 @@ namespace CostaRicaApi
             services.AddDbContext<ExpenseContext>(opt => opt.UseNpgsql(builder.ConnectionString));
             
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
             
             services.AddControllers().AddJsonOptions(options => { 
                     options.JsonSerializerOptions.IgnoreNullValues = true;
@@ -37,6 +42,16 @@ namespace CostaRicaApi
             });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => {
+                    options.TokenValidationParameters = new TokenValidationParameters {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["JWT_Key"])),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +63,10 @@ namespace CostaRicaApi
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

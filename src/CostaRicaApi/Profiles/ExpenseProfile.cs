@@ -8,6 +8,8 @@ namespace CostaRicaApi.Profiles {
         {
             CreateMap<ExpenseCreateUpdateDto, Expense>();
             CreateMap<Expense, ExpenseCreateUpdateDto>();
+            CreateMap<Expense, ShallowExpenseDto>()
+                .ForMember(x => x.OwnerId, opt => opt.MapFrom(source => source.Owner.Id));
         }
     }
 }

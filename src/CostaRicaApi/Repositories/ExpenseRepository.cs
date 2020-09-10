@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CostaRicaApi.Models;
 using Microsoft.EntityFrameworkCore;
@@ -17,14 +18,18 @@ namespace CostaRicaApi.Repositories {
             return entrySet.Entity;
         }
 
-        public Task<List<Expense>> GetAllExpensesAsync()
+        public Task<List<Expense>> GetAllExpensesAsync(int ownerId)
         {
-            return _context.Expenses.ToListAsync();
+            return _context.Expenses
+                        .Include(x => x.Owner)
+                        .Where(x => x.Owner != null && x.Owner.Id == ownerId)
+                        .OrderBy(x => x.Id)
+                        .ToListAsync();
         }
 
         public Task<Expense> GetExpenseByIdAsync(int id)
         {
-            return _context.Expenses.FindAsync(id).AsTask();
+            return _context.Expenses.Include(x => x.Owner).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public void RemoveExpense(Expense expense)

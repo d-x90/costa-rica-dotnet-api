@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CostaRicaApi.Repositories {
     public interface IExpenseRepository {
-        Task<List<Expense>> GetAllExpensesAsync();
+        Task<List<Expense>> GetAllExpensesAsync(int ownerId);
         
         Task<Expense> GetExpenseByIdAsync(int id);
 
