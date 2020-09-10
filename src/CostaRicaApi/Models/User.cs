@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace CostaRicaApi.Models {
@@ -22,5 +23,7 @@ namespace CostaRicaApi.Models {
         public byte[] PasswordHash { get; set; }
         
         public byte[] PasswordSalt { get; set; }
+
+        public List<Expense> Expenses { get; set; }
     }
 }

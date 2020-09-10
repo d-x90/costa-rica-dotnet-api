@@ -4,6 +4,7 @@ namespace CostaRicaApi.Models {
         public Currency Currency { get; set; }
         public float Amount { get; set; }
         public string Description { get; set; }
+        public User Owner { get; set; }
     }
 
     public enum Currency {
