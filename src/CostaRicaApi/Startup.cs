@@ -6,6 +6,7 @@ using CostaRicaApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +33,7 @@ namespace CostaRicaApi
 
             services.AddDbContext<ExpenseContext>(opt => opt.UseNpgsql(builder.ConnectionString));
             
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();

@@ -21,6 +21,8 @@ namespace CostaRicaApi.Controllers {
         private readonly IUserRepository _userRepo;
         private readonly IMapper _mapper;
         private readonly ILogger<ExpensesController> _logger;
+
+        private int GetCurrentUserId() => int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
         public ExpensesController(IExpenseRepository expenseRepo, IMapper mapper, IUserRepository userRepo, ILogger<ExpensesController> logger)
         {
             _expenseRepo = expenseRepo;
@@ -31,17 +33,13 @@ namespace CostaRicaApi.Controllers {
 
         [HttpGet]
         public async Task<ActionResult<List<ShallowExpenseDto>>> GetExpenses() {
-            var currentUserId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
-            var expenses = await _expenseRepo.GetAllExpensesAsync(currentUserId);
+            var expenses = await _expenseRepo.GetAllExpensesAsync();
 
             return expenses.Select(x => _mapper.Map<ShallowExpenseDto>(x)).ToList();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ShallowExpenseDto>> GetExpense(int id) {
-            var currentUserId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
             var expense = await _expenseRepo.GetExpenseByIdAsync(id);
             
             if(expense == null) {
@@ -50,19 +48,13 @@ namespace CostaRicaApi.Controllers {
 
             var expenseDto = _mapper.Map<ShallowExpenseDto>(expense);
 
-            if(expenseDto.OwnerId != currentUserId) {
-                return Unauthorized();
-            }
-
             return Ok(expenseDto);
         }
 
         [HttpPost]
         public async Task<ActionResult<Expense>> AddExpense(ExpenseCreateUpdateDto dto) {
-            var currentUserId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
             var expense = _mapper.Map<Expense>(dto);
-            expense.Owner = await _userRepo.GetUserByIdAsync(currentUserId);
+            expense.Owner = await _userRepo.GetUserByIdAsync(GetCurrentUserId());
 
             expense = await _expenseRepo.AddExpenseAsync(expense);
 
@@ -75,12 +67,7 @@ namespace CostaRicaApi.Controllers {
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateExpense(int id, ExpenseCreateUpdateDto dto) {
-            var currentUserId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var expense = await _expenseRepo.GetExpenseByIdAsync(id);
-
-            if(expense.Owner.Id != currentUserId) {
-                return Unauthorized();
-            }
 
             if(expense == null) {
                 return NotFound();
@@ -97,16 +84,10 @@ namespace CostaRicaApi.Controllers {
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteExpense(int id) {
-            var currentUserId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
-
             var expense = await _expenseRepo.GetExpenseByIdAsync(id);
 
             if(expense == null) {
                 return NotFound();
-            }
-
-            if(expense.Owner.Id != currentUserId) {
-                return Unauthorized();
             }
 
             _expenseRepo.RemoveExpense(expense);
