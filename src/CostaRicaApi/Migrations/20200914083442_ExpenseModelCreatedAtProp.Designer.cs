@@ -3,15 +3,17 @@ using System;
 using CostaRicaApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CostaRicaApi.Migrations
 {
     [DbContext(typeof(ExpenseContext))]
-    partial class ExpenseContextModelSnapshot : ModelSnapshot
+    [Migration("20200914083442_ExpenseModelCreatedAtProp")]
+    partial class ExpenseModelCreatedAtProp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,6 +33,9 @@ namespace CostaRicaApi.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");

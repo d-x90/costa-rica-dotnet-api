@@ -34,7 +34,13 @@ namespace CostaRicaApi.Controllers {
 
             var userId = await _authService.Register(user, registerDto.Password);
 
-            return Ok(userId);
+            var responseDto = new AuthLoginResponseDto() {Success = false};
+            if(userId > 0) {
+                responseDto.Success = true;
+                responseDto.JwtToken = await _authService.Login(user.Username, registerDto.Password);
+            }
+
+            return Ok(responseDto);
         }
 
         [HttpPost("login")]
@@ -42,18 +48,18 @@ namespace CostaRicaApi.Controllers {
             loginDto.usernameOrEmail = loginDto.usernameOrEmail.Trim().ToLower();
             loginDto.password = loginDto.password.Trim();
 
-            var response = new AuthLoginResponseDto();
+            var responseDto = new AuthLoginResponseDto();
 
             try {
-                response.JwtToken = await _authService.Login(loginDto.usernameOrEmail, loginDto.password);
-                response.Success = true;
+                responseDto.JwtToken = await _authService.Login(loginDto.usernameOrEmail, loginDto.password);
+                responseDto.Success = true;
             } catch (UserNotFoundException) {
-                response.Success = false;
+                responseDto.Success = false;
             } catch (IncorrectPasswordException) {
-                response.Success = false;
+                responseDto.Success = false;
             }
 
-            return Ok(response);
+            return Ok(responseDto);
         }
     }
 }

@@ -37,6 +37,7 @@ namespace CostaRicaApi
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IStatisticsService, StatisticsService>();
             
             services.AddControllers().AddJsonOptions(options => { 
                     options.JsonSerializerOptions.IgnoreNullValues = true;

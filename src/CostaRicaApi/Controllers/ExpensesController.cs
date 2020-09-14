@@ -32,10 +32,10 @@ namespace CostaRicaApi.Controllers {
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ShallowExpenseDto>>> GetExpenses() {
+        public async Task<ActionResult<ListResponseDto<ShallowExpenseDto>>> GetExpenses() {
             var expenses = await _expenseRepo.GetAllExpensesAsync();
 
-            return expenses.Select(x => _mapper.Map<ShallowExpenseDto>(x)).ToList();
+            return new ListResponseDto<ShallowExpenseDto>() { Items = expenses.Select(x => _mapper.Map<ShallowExpenseDto>(x)).ToList() };
         }
 
         [HttpGet("{id}")]
@@ -52,7 +52,7 @@ namespace CostaRicaApi.Controllers {
         }
 
         [HttpPost]
-        public async Task<ActionResult<Expense>> AddExpense(ExpenseCreateUpdateDto dto) {
+        public async Task<ActionResult<ShallowExpenseDto>> AddExpense(ExpenseCreateUpdateDto dto) {
             var expense = _mapper.Map<Expense>(dto);
             expense.Owner = await _userRepo.GetUserByIdAsync(GetCurrentUserId());
 
@@ -62,7 +62,7 @@ namespace CostaRicaApi.Controllers {
                 return BadRequest();
             }
 
-            return Ok(expense);
+            return Ok(_mapper.Map<ShallowExpenseDto>(expense));
         }
 
         [HttpPut("{id}")]
