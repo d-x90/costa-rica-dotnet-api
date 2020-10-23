@@ -1,8 +1,20 @@
-version: '2.0'
+version: "3"
 services:
   postgres:
     image: postgres
-    environment: 
-    - POSTGRES_PASSWORD=mysecretpassword
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DB=CostaRicaApi
     ports:
-    - "5432:5432"
+      - "5432:5432"
+    #volumes:
+    #  - ./db-mount:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=docker@docker.com
+      - PGADMIN_DEFAULT_PASSWORD=docker
+    ports:
+      - 2345:80

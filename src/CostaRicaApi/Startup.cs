@@ -3,6 +3,7 @@ using AutoMapper;
 using CostaRicaApi.Models;
 using CostaRicaApi.Repositories;
 using CostaRicaApi.Services;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,7 @@ namespace CostaRicaApi
 
             services.AddDbContext<ExpenseContext>(opt => opt.UseNpgsql(builder.ConnectionString));
             
+            services.AddMediatR(typeof(Startup));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
